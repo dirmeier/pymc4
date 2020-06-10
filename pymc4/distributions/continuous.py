@@ -16,15 +16,19 @@ from .half_student_t import HalfStudentT as TFPHalfStudentT
 
 
 __all__ = [
+    "Bates",
     "Beta",
     "Cauchy",
     "Chi2",
     "Exponential",
+    "Flat",
     "Gamma",
     "GeneralizedNormal",
     "Gumbel",
     "HalfCauchy",
+    "HalfFlat",
     "HalfNormal",
+    "HalfStudentT",
     "InverseGamma",
     "InverseGaussian",
     "Kumaraswamy",
@@ -38,10 +42,7 @@ __all__ = [
     "StudentT",
     "Triangular",
     "Uniform",
-    "Flat",
-    "HalfFlat",
     "VonMises",
-    "HalfStudentT",
     "Weibull",
 ]
 
@@ -1510,3 +1511,51 @@ class Weibull(PositiveContinuousDistribution):
             bijector=bij.Invert(bij.WeibullCDF(scale=scale, concentration=concentration)),
             name="Weibull",
         )
+
+
+class Bates(ContinuousDistribution):
+    r"""Bates random variable.
+
+    The continuous probability distribution of the mean of `n` independent
+    uniform random variables defined on the interval U.
+
+    The pdf of this distribution when the uniform rvs are defined
+    on the unit interval `[0, 1]` is
+
+    .. math::
+
+       f(x \mid n) =
+            \frac{n}{2(n - 1)!}
+            \sum_{k=0}^n (-1)^k \binom{n}{k} (nx - k)^{n-1} sgn(nx - k)
+
+    The pdf of the distribution for any interval `[low, high]` is
+
+    .. math::
+
+       f(x \mid n, low, high) = f(\frac{x - low}{high - low} \mid n)
+
+    for all `low \le x \le high` and `0` otherwise.
+
+    ========  ====================================================
+    Support   :math:`x \in [low, high]`
+    Mean      :math:`0.5(low + high)`
+    Variance  :math:`1/12 (high - low)^2`
+    ========  ====================================================
+
+    Parameters
+    ----------
+     n : int|tensor
+        Number of independent uniform random variables.
+    low : float|tensor
+        Lower bound of interval.
+    high : float|tensor
+        Upper bound of interval.
+    """
+
+    def __init__(self, name, n, low, high, **kwargs):
+        super().__init__(name, n=n, low=low, high=high, **kwargs)
+
+    @staticmethod
+    def _init_distribution(conditions):
+        n, low, high = conditions["n"], conditions["low"], conditions["high"]
+        return tfd.Bates(total_count=n, low=low, high=high)
