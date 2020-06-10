@@ -20,6 +20,7 @@ __all__ = [
     "Beta",
     "Cauchy",
     "Chi2",
+    "ContinuousBernoulli",
     "Exponential",
     "Flat",
     "Gamma",
@@ -1544,7 +1545,7 @@ class Bates(ContinuousDistribution):
 
     Parameters
     ----------
-     n : int|tensor
+    n : int|tensor
         Number of independent uniform random variables.
     low : float|tensor
         Lower bound of interval.
@@ -1559,3 +1560,44 @@ class Bates(ContinuousDistribution):
     def _init_distribution(conditions):
         n, low, high = conditions["n"], conditions["low"], conditions["high"]
         return tfd.Bates(total_count=n, low=low, high=high)
+
+
+class ContinuousBernoulli(BoundedContinuousDistribution):
+    r"""Continuous Bernoulli random variable.
+
+    The probability distribution of a continuous random variable supported on
+    the interval `[0, 1]`.
+
+    The pdf of this distribution is
+
+    .. math::
+
+       f(x \mid p) = p**x (1 - p)**(1 - x) * C(p)
+
+    where `C(p)` is a normalization constant.
+
+    ========  ====================================================
+    Support   :math:`x \in [0, 1]`
+    Mean      :math:`p / (2p - 1) + 1  /(2tanh^{-1}(1 - 2p)) if p != 0.5,
+                                                             else 0.5`
+    ========  ====================================================
+
+    Parameters
+    ----------
+    p : float|tensor
+        The probability paramater of a continuous Bernoulli.
+    """
+
+    def upper_limit(self):
+        return 0.0
+
+    def lower_limit(self):
+        return 1.0
+
+    def __init__(self, name, p, **kwargs):
+        super().__init__(name, p=p, **kwargs)
+
+    @staticmethod
+    def _init_distribution(conditions):
+        p = conditions["p"]
+        return tfd.ContinuousBernoulli(probs=p)

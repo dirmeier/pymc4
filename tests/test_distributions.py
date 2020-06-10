@@ -44,6 +44,14 @@ _distribution_conditions = {
             "sample": np.array([0.0, 0.0, 1.0], dtype="float32"),
         },
     },
+    "Bates": {
+        "scalar_parameters": {"n": 5, "low": 0.0, "high": 5.0},
+        "multidim_parameters": {
+            "n": np.array([5, 15, 25], dtype=","),
+            "low": np.array([0.0, 0.0, 0.0], dtype="float32"),
+            "high": np.array([10.0, 5.0, 1.0], dtype="float32")
+        },
+    },
     "Beta": {
         "scalar_parameters": {"concentration0": 1.0, "concentration1": 1.0},
         "multidim_parameters": {
@@ -85,6 +93,12 @@ _distribution_conditions = {
         "multidim_parameters": {
             "loc": np.array([0.0, 0.0], dtype="float32"),
             "scale": np.array([1.0, 1.0], dtype="float32"),
+        },
+    },
+    "ContinuousBernoulli": {
+        "scalar_parameters": {"p": 0.5},
+        "multidim_parameters": {
+            "p": np.array([0.1, 0.5, 0.9], dtype="float32")
         },
     },
     "Chi2": {
